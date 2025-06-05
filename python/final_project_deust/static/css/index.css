@@ -1,0 +1,14 @@
+body{
+    position: relative;
+}
+.navBar-container{
+    width: 20%;
+    height: 100dvh;
+    padding: 1rem;
+    position: fixed;
+    background-color: aqua;
+}
+.graph-container{
+    width: 80%;
+    min-height: 100dvh;
+}

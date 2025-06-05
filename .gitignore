@@ -1,5 +1,6 @@
 __pycache__
 .venv
+venv
 python/__pycache__/*
 python/venv/*
 
