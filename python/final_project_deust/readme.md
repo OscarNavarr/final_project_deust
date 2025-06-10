@@ -49,7 +49,7 @@ venv\Scripts\Activate.ps1
 ## 4 Lancer le serveur 
 Dans le terminal (en étant dans le dossier du projet), tapez :
 ```bash
-uvicorn main:app --reload
+uvicorn main:app --reload --host 0.0.0.0
 ``` 
 
 ## 5 Lancer le contrôleur

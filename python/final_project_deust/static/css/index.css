@@ -1,14 +1,47 @@
 body{
     position: relative;
+    background-color: #f0f0f0;
 }
 .navBar-container{
-    width: 20%;
+    width: 20dvw;
     height: 100dvh;
     padding: 1rem;
     position: fixed;
-    background-color: aqua;
+    top: 0rem;
+    left: 0rem;
+    background-color: #fff;
 }
 .graph-container{
-    width: 80%;
+    width: 76dvw;
     min-height: 100dvh;
+    max-height: 100dvh;
+    overflow-y: auto;
+    position: fixed;
+    top: 0rem;
+    right: 0rem;
+    padding: 0.5rem;
+}
+
+#robotList, #addRobotFormContainer{
+    background-color: #fff;
+    width: 46.5%;
+    padding: 0.5rem;
+    border-radius: 1rem;
+}
+
+.th_robot_list, .td_robot_list{
+    width: 12rem;
+    text-align: center;
+}
+
+.td_robot_list{
+    height: 3rem;
+    width: 12rem;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: center;
+}
+
+#robotStatusBody{
+    max-height: 12rem;
+    overflow-y: auto;
 }

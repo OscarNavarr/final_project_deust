@@ -10,7 +10,8 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS robots (
         id TEXT PRIMARY KEY,
         name TEXT,
-        created_at TEXT
+        created_at TEXT,
+        mission TEXT DEFAULT 'None'
     )
     """)
     c.execute("""

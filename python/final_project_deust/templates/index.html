@@ -10,10 +10,95 @@
 
     </div>
     <div class="graph-container">
-        
+        <!--
+            ***************************************
+            *       Show robots status list       *
+            ***************************************
+        -->
+        <div style="background-color: #fff; width: 100%; margin: 2rem 0rem;border-radius: 1rem;">
+            <h2 style="line-height: 0rem; padding: 1rem 1rem;">Status robot</h2>
+            <table style="width: 100%; padding: 0.5rem;">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;text-align: start;">ID</th>
+                        <th style="width: 25%;text-align: start;">Dérnier enregistrement</th>
+                        <th style="width: 25%;text-align: start;">Position</th>
+                        <th style="width: 25%;text-align: start;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="robotStatusBody">
+                    <tr>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">21sqdq3a21</td>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">2025-01-01 12:00:00</td>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">32.23;12.45</td>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">En cours</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">21sqd321D2</td>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">2025-07-24 06:12:00</td>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">12.04;24.45</td>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">Inactif</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">21sqadq3</td>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">2025-03-12 10:13:32</td>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">89.23;12.34</td>
+                        <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">En cours</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--
+            ***************************************
+            * Show robots list and add robot form *
+            ***************************************
+        -->
+        <div id="container-for-robotList-and-addRobot" style="display: flex; justify-content: space-between;">
+            <div id="robotList">
+                <h2 style="line-height: 0rem; margin-left: 1rem; margin-bottom: 3rem;">Lista de Robots</h2>
+                <div style="max-height: 15rem !important; overflow-y: auto;">
+                    <table id="robotListTable">
+                        <thead>
+                            <tr>
+                                <th class="th_robot_list">ID</th>
+                                <th class="th_robot_list">Nom</th>
+                                <th class="th_robot_list">Mission</th>
+                                <th class="th_robot_list">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="robotListBody" >
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <form id="addRobotFormContainer">
+                <h2 style="line-height: 0rem; margin-left: 1rem; margin-bottom: 3rem;">Ajouter un Robot</h2>
+                <label for="robotName" style="font-weight: bold;">Nom du Robot:</label>
+                <br>
+                <input type="text" id="robotName" name="robotName" required style="width: 85%; border-radius: 0.5rem; border: 1px solid #ccc; padding: 0.5rem; margin: 1rem 0rem; height: 2rem;">
+                <br>
+                <br>
+                <label for="robotMission" style="font-weight: bold;">Mission:</label>
+                <br>
+                <select id="robotMission" name="robotMission" style="height: 3.3rem; padding: 0.5rem; border-radius: 0.5rem; border: 1px solid #ccc; width: 88%; margin: 1rem 0rem;background-color: white; font-size: 1rem;">
+                    <option value="Exploration" style="font-size: 1rem;">Exploration</option>
+                    <option value="Repos" style="font-size: 1rem;">Repos</option>
+                </select>
+                <br>
+                <div style="display: flex; justify-content: center;">
+                    <button 
+                        type="submit"
+                        style=" background-color: rgb(31, 165, 209); color: white; padding: 1rem 2rem; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: bold; margin-top: 1.5rem; font-size: 1rem;"
+                    >Ajouter</button>
+                </div>
+            </form>
+        </div>
 
     </div>
 
+    <script type="module" src="../static/js/handleHTML.js"></script>
+    <script type="module" src="../static/js/handleData.js"></script>
     <script src="../static/js/index.js"></script>
 </body>
 </html>

@@ -2,12 +2,12 @@ from database import get_db
 from uuid import uuid4
 import datetime
 
-def create_robot(name):
+def create_robot(name: str, mission: str = "None"):
     conn = get_db()
     cursor = conn.cursor()
     robot_id = str(uuid4())
     now = datetime.datetime.now().isoformat()
-    cursor.execute("INSERT INTO robots (id, name, created_at) VALUES (?, ?, ?)", (robot_id, name, now))
+    cursor.execute("INSERT INTO robots (id, name, created_at, mission) VALUES (?, ?, ?, ?)", (robot_id, name, now, mission))
     conn.commit()
     conn.close()
     return robot_id
@@ -15,7 +15,15 @@ def create_robot(name):
 def get_robots():
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT id, name, created_at FROM robots")
+    cursor.execute("SELECT id, name, created_at, mission FROM robots")
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+def get_status():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT robot_id, timestamp, position, status FROM status")
     result = cursor.fetchall()
     conn.close()
     return result
