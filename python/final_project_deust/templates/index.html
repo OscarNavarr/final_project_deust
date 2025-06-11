@@ -3,7 +3,6 @@
 <head>
     <title>Simulador de Robot</title>
     <link rel="stylesheet" href="../static/css/index.css">
-
 </head>
 <body>
     <div class="navBar-container">
@@ -48,6 +47,33 @@
                 </tbody>
             </table>
         </div>
+
+        <!--
+            ***************************************
+            *         Add instructions form       *
+            ***************************************
+        -->
+        <div style="background-color: #fff; width: 100%; margin: 2rem 0rem;border-radius: 1rem;">
+            <h2 style="line-height: 0rem; padding: 1rem 1rem;">Ajouter des instructions</h2>
+            <form id="addInstructionsForm" style="padding: 1rem;">
+                <label for="robotNameSelectBox" style="font-weight: bold;">Nom du robot</label>
+                <br>
+                <select name="robotNameSelectBox" id="robotNameSelectBox" style="height: 3.3rem; padding: 0.5rem; border-radius: 0.5rem; border: 1px solid #ccc; width: 100%; margin: 1rem 0rem;background-color: white; font-size: 1rem;">
+                </select>
+                <br>
+                <label for="instructionType" style="font-weight: bold;">Nombre de bloque</label>
+                <br>
+                <input type="text" id="instructionType" name="instructionType" required style="width: 99%; border-radius: 0.5rem; border: 1px solid #ccc; padding: 0.5rem; margin: 1rem 0rem; height: 2rem;">
+                <br>
+                <div style="display: flex; justify-content: center;">
+                    <button 
+                        type="submit"
+                        style=" background-color: rgb(31, 165, 209); color: white; padding: 1rem 2rem; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: bold; margin-top: 1.5rem; font-size: 1rem;"
+                    >Ajouter</button>
+                </div>
+            </form>
+
+        </div>
         <!--
             ***************************************
             * Show robots list and add robot form *
@@ -55,7 +81,7 @@
         -->
         <div id="container-for-robotList-and-addRobot" style="display: flex; justify-content: space-between;">
             <div id="robotList">
-                <h2 style="line-height: 0rem; margin-left: 1rem; margin-bottom: 3rem;">Lista de Robots</h2>
+                <h2 style="line-height: 0rem; margin-left: 1rem; margin-bottom: 3rem;">Liste des Robots</h2>
                 <div style="max-height: 15rem !important; overflow-y: auto;">
                     <table id="robotListTable">
                         <thead>
@@ -78,6 +104,9 @@
                 <br>
                 <input type="text" id="robotName" name="robotName" required style="width: 85%; border-radius: 0.5rem; border: 1px solid #ccc; padding: 0.5rem; margin: 1rem 0rem; height: 2rem;">
                 <br>
+                <label for="addresseMac" style="font-weight: bold;">Adresse Mac du robot</label>
+                <br>
+                <input type="text" id="addresseMac" name="addresseMac" required style="width: 85%; border-radius: 0.5rem; border: 1px solid #ccc; padding: 0.5rem; margin: 1rem 0rem; height: 2rem;">
                 <br>
                 <label for="robotMission" style="font-weight: bold;">Mission:</label>
                 <br>

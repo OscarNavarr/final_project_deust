@@ -1,38 +1,85 @@
+export function handleRobotList(id, nom, mission) {
+    const tableBody = document.getElementById("robotListBody");
+    if (!tableBody) {
+        console.error("Table body with id 'robotListBody' not found.");
+        return;
+    }
 
+    const row = document.createElement("tr");
+    row.dataset.robotId = id;
 
-export function handleRobotList(id, nom, mission){
-
-    const row = `
-        <tr data-robotId="${id}">
-            <td class="td_robot_list" data-robotId="${id}">${id.slice(10)+"..."}</td>
-            <td class="td_robot_list">${nom}</td>
-            <td class="td_robot_list">${mission}</td>
-            <td class="td_robot_list">
-                <button type="button" data-robotId="${id}" class="btn-effacer">Effacer</button>
-            </td>
-        </tr>
+    row.innerHTML = `
+        <td class="td_robot_list">${id.slice(0,15)}...</td>
+        <td class="td_robot_list">${nom}</td>
+        <td class="td_robot_list">${mission}</td>
+        <td class="td_robot_list">
+            <button type="button" data-robot-id="${id}" class="btn-effacer">Effacer</button>
+        </td>
     `;
 
-    const tableBody = document.getElementById("robotListBody");
-    if (tableBody) {
-        tableBody.insertAdjacentHTML('beforeend', row);
-    } else {
-        console.error("Table body with id 'robotListBody' not found.");
-    }
-
-    /**
-     * 
-     * Handle delete button click
-     * 
-    **/
-    const btnDelete = document.querySelector(".btn-effacer data-robotID='"+id+"'"); // Usamos querySelector en newRow
-    //todo: trabajar en el boton borrar
-    if(btnDelete){
-        btnDelete.addEventListener("click", async function(event){
-            const robotId = event.target.getAttribute("data-robotId");
-            console.log("Effacer le robot avec l'ID:", robotId);
-            // Aquí podrías añadir la lógica para eliminar la fila del DOM
-            // y hacer la llamada a la API para eliminar el robot
-        });
-    }
+    tableBody.appendChild(row);
 }
+
+
+// This function allow me to add the options in the select box with robot id
+export function handleRobotListForSelectBox(id, nom){
+    const selectBox = document.getElementById("robotNameSelectBox");
+    if (!selectBox) {
+        console.error("Select box with id 'robotName' not found.");
+        return;
+    }
+    const option = ` <option value="${id}" style="font-size: 1rem;">${nom}</option>`
+    selectBox.insertAdjacentHTML("beforeend", option);
+}
+
+
+// Asignar el manejador de eventos una sola vez (event delegation)
+document.addEventListener("DOMContentLoaded", async() => {
+
+    const moduleHandleData = await import('./handleData.js');
+
+    const tableBody = document.getElementById("robotListBody");
+    if (!tableBody) return;
+
+    tableBody.addEventListener("click", async function (event) {
+        const btn = event.target.closest(".btn-effacer");
+        if (!btn) return;
+
+        const robotId = btn.getAttribute("data-robot-id");
+        if (!robotId) {
+            console.error("Robot ID not found in button data attribute.");
+            alert("On a pas pu trouver l'ID du robot à supprimer.");
+            return;
+        }
+        try {
+            const delete_Reponse = await moduleHandleData.deleteRobot(robotId);
+
+            if(delete_Reponse.message !== "robot supprimé") {
+                throw new Error("Failed to delete robot");
+            }
+
+            // Eliminar fila del DOM
+            const row = btn.closest("tr");
+            if (row) row.remove();
+
+            // delete the instruction associated with the robot id
+            const reponse_deleteInstruction = await moduleHandleData.deleteInstruction(robotId);
+            if (reponse_deleteInstruction.message !== "Instruction supprimée avec succès") {
+                throw new Error("Failed to delete instruction");
+            }
+
+            // delete the option in the select box that match the robot id
+            const selectBox = document.getElementById("robotNameSelectBox");
+            if (selectBox) {
+                const optionToRemove = selectBox.querySelector(`option[value="${robotId}"]`);
+                if (optionToRemove) {
+                    optionToRemove.remove();
+                }
+            }
+
+        } catch (error) {
+            console.error("Error al eliminar el robot:", error);
+            alert("Erreur lors de la suppression du robot. Veuillez réessayer.");
+        }
+    });
+});
