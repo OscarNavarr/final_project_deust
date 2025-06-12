@@ -83,3 +83,25 @@ document.addEventListener("DOMContentLoaded", async() => {
         }
     });
 });
+
+
+// This function allow to show the status of each robot in the UI
+export function handleStatusList(nom, date, lignes, cubes = 3,status) {
+    const tableBody = document.getElementById("robotStatusBody");
+    if (!tableBody) {
+        console.error("Table body with id 'statusListBody' not found.");
+        return;
+    }
+
+    const row = `
+        <tr>
+            <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${nom}</td>
+            <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${date}</td>
+            <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${lignes}</td>
+            <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${cubes}</td>
+            <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${status}</td>
+        </tr>
+    `;
+
+    tableBody.insertAdjacentHTML("beforeend", row);
+}

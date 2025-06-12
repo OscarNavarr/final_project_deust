@@ -38,6 +38,13 @@ public class RobotClient {
         con.setRequestMethod("POST");
         return readResponse(con);
     }
+    public static String getInstructions(String robotId) throws IOException {
+        String query = String.format("/instructions?robot_id=%s", URLEncoder.encode(robotId, "UTF-8"));
+        URL url = new URL(BASE_URL + query);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        return readResponse(con);
+    }
 
     // Listar todos los robots
     public static String listRobots() throws IOException {
@@ -46,6 +53,20 @@ public class RobotClient {
         con.setRequestMethod("GET");
         return readResponse(con);
     }
+
+    public static String sendRobotStatus(String robotId, String position, String status) throws IOException {
+        String query = String.format(
+                "/update_status/?robot_id=%s&position=%s&status=%s",
+                URLEncoder.encode(robotId, "UTF-8"),
+                URLEncoder.encode(position, "UTF-8"),
+                URLEncoder.encode(status, "UTF-8")
+        );
+        URL url = new URL(BASE_URL + query);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        return readResponse(con);
+    }
+
 
     // Método reutilizable para leer la respuesta HTTP
     private static String readResponse(HttpURLConnection con) throws IOException {

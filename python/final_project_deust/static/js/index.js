@@ -84,6 +84,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                 console.error('Error creating instruction:', error);
             }
         })
+        
+        /**
+         * Get all status and update the UI
+         */
+        for(const status of statusData){
+            moduleHandleHTML.handleStatusList(status[0], status[2], status[3], 4, status[4]);
+        }
     } catch (error) {
         console.error('Error al importar el módulo:', error);
     }

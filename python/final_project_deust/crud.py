@@ -30,7 +30,7 @@ def get_robots():
 def get_status():
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT robot_id, timestamp, ligne, status FROM status")
+    cursor.execute("SELECT robots.name, robot_id, timestamp, ligne, status FROM status JOIN robots ON status.robot_id = robots.id ORDER BY timestamp DESC")
     result = cursor.fetchall()
     conn.close()
     return result
