@@ -27,6 +27,37 @@ def get_robots():
     conn.close()
     return result
 
+
+def get_robot_data_by_mac_address(mac_address: str):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT robots.id, robots.addressMAC, robots.name, robots.created_at, robots.mission,
+               instructions.id AS inst_id, instructions.instruction
+        FROM robots
+        JOIN instructions ON robots.id = instructions.robot_id
+        WHERE robots.addressMAC = ?
+        ORDER BY instructions.id DESC
+        LIMIT 1
+    """, (mac_address,))
+    
+    result = cursor.fetchone()
+    conn.close()
+    
+    if result:
+        return {
+            "id": result[0],
+            "mac_address": result[1],
+            "name": result[2],
+            "created_at": result[3],
+            "mission": result[4],
+            "inst_id": result[5],
+            "instruction": result[6]
+        }
+    else:
+        return {"message": "Aucun état trouvé pour ce robot"}
+
+
 def get_status():
     conn = get_db()
     cursor = conn.cursor()

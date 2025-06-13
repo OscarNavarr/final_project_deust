@@ -1,5 +1,3 @@
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -31,7 +29,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
     private final int zoneStockageIndex2 = 80;
     private final int zoneTraitOffset = 15;
 
-    private String robotId = "robot003"; // Valeur par défaut
+    private String robotId ; // Valeur par défaut
 
     public RobotPanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));

@@ -4,17 +4,45 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.io.*;
+
+
 
 public class RobotClient {
     private static final String BASE_URL = "http://127.0.0.1:8000";
+    private static final String MAC_ADDRESS = "A4:5E:60:11:22:33";
 
-    // Obtener el estado del robot
+
+    // Obtener el estado del robot por su idRobot
     public static String getRobotStatus(String robotId) throws IOException {
         URL url = new URL(BASE_URL + "/robot/" + robotId + "/status");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         return readResponse(con);
     }
+
+    // Obtenir les info du robot pour son adresse Mac
+    public static String getRobotDataByMacAddress(String macAddress) throws IOException {
+        // Crear el JSON para enviar
+        String jsonInputString = String.format("{\"mac_address\": \"%s\"}", macAddress);
+
+        // Crear la URL y conexión
+        URL url = new URL(BASE_URL + "/robot_data_by_mac_address");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setDoOutput(true);
+
+        // Enviar el JSON en el cuerpo de la solicitud
+        try (OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+
+        return readResponse(con);
+    }
+
 
     // Crear un nuevo robot
     public static String createRobot(String name) throws IOException {
@@ -55,29 +83,39 @@ public class RobotClient {
     }
 
     public static String sendRobotStatus(String robotId, String position, String status) throws IOException {
-        String query = String.format(
-                "/update_status/?robot_id=%s&position=%s&status=%s",
-                URLEncoder.encode(robotId, "UTF-8"),
-                URLEncoder.encode(position, "UTF-8"),
-                URLEncoder.encode(status, "UTF-8")
+        String jsonInputString = String.format(
+                "{\"robot_id\":\"%s\", \"position\":\"%s\", \"status\":\"%s\"}",
+                robotId, position, status
         );
-        URL url = new URL(BASE_URL + query);
+
+        URL url = new URL(BASE_URL + "/update_status/");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
-        return readResponse(con);
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setDoOutput(true);
+
+        try (OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        String response = readResponse(con);
+        System.out.println("Respuesta del servidor: " + response);  // 👈 Imprime aquí
+        return response;
     }
 
 
     // Método reutilizable para leer la respuesta HTTP
     private static String readResponse(HttpURLConnection con) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        StringBuilder content = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            return response.toString();
         }
-        in.close();
-        con.disconnect();
-        return content.toString();
     }
+
 }

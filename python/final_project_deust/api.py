@@ -23,6 +23,14 @@ class RobotInstruction(BaseModel):
 class RobotInstructionForDelete(BaseModel):
     robot_id: str
 
+class RobotStatus(BaseModel):
+    robot_id: str
+    position: str
+    status: str
+
+class RobotDataByMacAddress(BaseModel):
+    mac_address: str
+
 # Configuración para templates
 templates = Jinja2Templates(directory="templates")
 
@@ -50,13 +58,17 @@ def get_all_status():
     return crud.get_status()
 
 @router.post("/update_status/")                              # UPDATE STATUS OF A ROBOT   
-def update_status(robot_id: str, position: str, status: str):
-    crud.add_status(robot_id, position, status)
+def update_status(status: RobotStatus):
+    crud.add_status(status.robot_id, status.position, status.status)
     return {"message": "status ajouté"}
 
 @router.get("/robot/{robot_id}/status")                      # GET LAST STATUS OF A ROBOT    
 def get_status(robot_id: str):
     return crud.get_last_status(robot_id)
+
+@router.post("/robot_data_by_mac_address")                    # GET THE ROBOT DATA BY HIS MAC ADDRESS
+def get_robot_data_by_mac_address(robotMacAddress: RobotDataByMacAddress):
+    return crud.get_robot_data_by_mac_address(robotMacAddress.mac_address)
 
 @router.get('/instructions')
 def get_instructions(robot_id: str):
