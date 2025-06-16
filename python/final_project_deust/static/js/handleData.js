@@ -37,7 +37,7 @@ export async function createRobot(robotName, robotAddressMac, robotMission){
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name: robotName, addressMac: robotAddressMac, mission: robotMission })
+            body: JSON.stringify({ name: robotName, uuid: robotAddressMac, mission: robotMission })
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

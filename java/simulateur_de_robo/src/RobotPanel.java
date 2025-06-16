@@ -30,12 +30,14 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
     private final int zoneTraitOffset = 15;
 
     private String robotId ; // Valeur par défaut
+    private int instructionID;
 
-    public RobotPanel() {
+    public RobotPanel(String robotId, int instructionID) {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(BLANC);
         addMouseListener(this);
-
+        this.robotId = robotId;
+        this.instructionID = instructionID;
         parcoursPoints = new ArrayList<>();
         double centerX = WIDTH / 2.0;
         double centerY = HEIGHT / 2.0;
@@ -141,7 +143,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
 
                 // ENVOI API : cube déposé
                 try {
-                    RobotClient.sendRobotStatus(robotId, String.valueOf(indexPoint), "drop_c" + selectedCubeIndex);
+                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "drop_c" + selectedCubeIndex);
                 } catch (Exception ex) {
                     System.out.println("Erreur API: " + ex.getMessage());
                 }
@@ -172,7 +174,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
 
                 // ENVOI API : cube choisi
                 try {
-                    RobotClient.sendRobotStatus(robotId, String.valueOf(indexPoint), "pickup_c" + selectedCubeIndex);
+                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "pickup_c" + selectedCubeIndex);
                 } catch (Exception ex) {
                     System.out.println("Erreur API: " + ex.getMessage());
                 }

@@ -9,7 +9,7 @@ def create_tables():
     c.execute("""
     CREATE TABLE IF NOT EXISTS robots (
         id TEXT PRIMARY KEY,
-        addressMAC TEXT NOT NULL,
+        uuid TEXT NOT NULL,
         name TEXT,
         created_at TEXT,
         mission TEXT DEFAULT 'None'
@@ -29,18 +29,20 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS instructions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         robot_id TEXT,
-        instruction TEXT,
+        blocks TEXT,
         FOREIGN KEY(robot_id) REFERENCES robots(id)
     )
     """)
     c.execute("""
     CREATE TABLE IF NOT EXISTS telemetry(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        robot_id TEXT,
+        timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
         vitesse FLOAT,
         distance_ultrasons FLOAT,
         status_deplacement TEXT,
         ligne INTEGER,
-        pince_active BOOLEAN,
-        robot_id TEXT,
+        status_pince BOOLEAN,
         FOREIGN KEY(robot_id) REFERENCES robots(id)
               )
     """)

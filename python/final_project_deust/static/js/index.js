@@ -28,14 +28,14 @@ document.addEventListener('DOMContentLoaded', async function () {
             event.preventDefault(); // Prevent the default form submission
 
             const robotName = document.getElementById("robotName").value;
-            const robotAddressMac = document.getElementById("addresseMac").value;
+            const robotUUID = document.getElementById("uuid_robot").value;
             const robotMission = document.getElementById("robotMission").value;
 
             try {
-                if (!robotName || !robotMission || !robotAddressMac) {
+                if (!robotName || !robotMission || !robotUUID) {
                     throw new Error('All fields are required to create a robot');
                 }
-                const {uuid} = await moduleHandleData.createRobot(robotName, robotAddressMac, robotMission);
+                const {uuid} = await moduleHandleData.createRobot(robotName, robotUUID, robotMission);
                 console.log('Robot created:', uuid);
 
                 if (!uuid) {

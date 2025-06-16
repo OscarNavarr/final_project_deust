@@ -10,7 +10,7 @@ import java.io.*;
 
 public class RobotClient {
     private static final String BASE_URL = "http://127.0.0.1:8000";
-    private static final String MAC_ADDRESS = "A4:5E:60:11:22:33";
+    private static final String MAC_ADDRESS = "12312fz-12dd-1dad-11da5";
 
 
     // Obtener el estado del robot por su idRobot
@@ -22,12 +22,12 @@ public class RobotClient {
     }
 
     // Obtenir les info du robot pour son adresse Mac
-    public static String getRobotDataByMacAddress(String macAddress) throws IOException {
+    public static String getRobotDataByUUID(String uuid) throws IOException {
         // Crear el JSON para enviar
-        String jsonInputString = String.format("{\"mac_address\": \"%s\"}", macAddress);
+        String jsonInputString = String.format("{\"uuid\": \"%s\"}", uuid);
 
         // Crear la URL y conexión
-        URL url = new URL(BASE_URL + "/robot_data_by_mac_address");
+        URL url = new URL(BASE_URL + "/robot_data_by_uuid");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
@@ -82,10 +82,10 @@ public class RobotClient {
         return readResponse(con);
     }
 
-    public static String sendRobotStatus(String robotId, String position, String status) throws IOException {
+    public static String sendRobotStatus(String robotId, int instructionID, String position, String status) throws IOException {
         String jsonInputString = String.format(
-                "{\"robot_id\":\"%s\", \"position\":\"%s\", \"status\":\"%s\"}",
-                robotId, position, status
+                "{\"robot_id\":\"%s\", \"instructionID\":\"%s\", \"position\":\"%s\", \"status\":\"%s\"}",
+                robotId, instructionID, position, status
         );
 
         URL url = new URL(BASE_URL + "/update_status/");

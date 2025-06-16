@@ -2,12 +2,12 @@ from database import get_db
 from uuid import uuid4
 import datetime
 
-def create_robot(name: str, addressMac: str, mission: str = "None"):
+def create_robot(name: str, uuid: str, mission: str = "None"):
     conn = get_db()
     cursor = conn.cursor()
     robot_id = str(uuid4())
     now = datetime.datetime.now().isoformat()
-    cursor.execute("INSERT INTO robots (id, name, addressMAC, created_at, mission) VALUES (?, ?, ?, ?, ?)", (robot_id, name, addressMac,now, mission))
+    cursor.execute("INSERT INTO robots (id, name, uuid, created_at, mission) VALUES (?, ?, ?, ?, ?)", (robot_id, name, uuid,now, mission))
     conn.commit()
     conn.close()
     return robot_id
@@ -28,18 +28,18 @@ def get_robots():
     return result
 
 
-def get_robot_data_by_mac_address(mac_address: str):
+def get_robot_by_uuid(uuid: str):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT robots.id, robots.addressMAC, robots.name, robots.created_at, robots.mission,
-               instructions.id AS inst_id, instructions.instruction
+        SELECT robots.id, robots.uuid, robots.name, robots.created_at, robots.mission,
+               instructions.id AS inst_id, instructions.blocks
         FROM robots
         JOIN instructions ON robots.id = instructions.robot_id
-        WHERE robots.addressMAC = ?
+        WHERE robots.uuid = ?
         ORDER BY instructions.id DESC
         LIMIT 1
-    """, (mac_address,))
+    """, (uuid,))
     
     result = cursor.fetchone()
     conn.close()
@@ -66,11 +66,11 @@ def get_status():
     conn.close()
     return result
 
-def add_status(robot_id, position, status):
+def add_status(robot_id, instructionID, position, status):
     conn = get_db()
     cursor = conn.cursor()
     timestamp = datetime.datetime.now().isoformat()
-    cursor.execute("INSERT INTO status (robot_id, timestamp, ligne, status) VALUES (?, ?, ?, ?)", (robot_id, timestamp, position, status))
+    cursor.execute("INSERT INTO status (robot_id, instructionID, timestamp, ligne, status) VALUES (?, ?, ?, ?, ?)", (robot_id, instructionID, timestamp, position, status))
     conn.commit()
     conn.close()
 
@@ -103,7 +103,7 @@ def get_instructions(robot_id: str):
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT instructions
+        SELECT mission
         FROM robots
         WHERE id = ?
     """, (robot_id,))
@@ -121,7 +121,7 @@ def create_instruction(robot_id: str, instruction: str):
     cursor = conn.cursor()
     
     cursor.execute("""
-        INSERT INTO instructions (robot_id, instruction)
+        INSERT INTO instructions (robot_id, blocks)
         VALUES (?, ?)
     """, (robot_id, instruction))
     
@@ -143,3 +143,18 @@ def delete_instruction(robot_id: str):
     conn.close()
     
     return {"message": "Instruction supprimée avec succès"}
+
+def add_telemetry(robot_id: str, vitesse: float, distance_ultrasons: float, status_deplacement: str, ligne: str, status_pince: str):
+    conn = get_db()
+    cursor = conn.cursor()
+    timestamp = datetime.datetime.now().isoformat()
+    
+    cursor.execute("""
+        INSERT INTO telemetry (robot_id, timestamp, vitesse, distance_ultrasons, status_deplacement, ligne, status_pince)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (robot_id, timestamp, vitesse, distance_ultrasons, status_deplacement, ligne, status_pince))
+    
+    conn.commit()
+    conn.close()
+    
+    return {"message": "Telemetry data added successfully"}

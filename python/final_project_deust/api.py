@@ -10,7 +10,7 @@ router = APIRouter()
 
 class RobotCreate(BaseModel):
     name: str
-    addressMac: str
+    uuid: str
     mission: str = "None" # "None" como valor predeterminado
 
 class DeleteRobot(BaseModel):
@@ -27,9 +27,18 @@ class RobotStatus(BaseModel):
     robot_id: str
     position: str
     status: str
+    instructionID: int
 
-class RobotDataByMacAddress(BaseModel):
-    mac_address: str
+class RobotDataByUUID(BaseModel):
+    uuid: str
+
+class Telemetry_Params(BaseModel):
+    robot_id: str
+    vitesse: float
+    distance_ultrasons: float
+    status_deplacement: str
+    ligne: str
+    status_pince: bool # true si la pince est ouverte, false si elle est fermée
 
 # Configuración para templates
 templates = Jinja2Templates(directory="templates")
@@ -41,7 +50,7 @@ async def read_root(request: Request):
 
 @router.post("/robot/")                                     # CREATE A ROBOT
 def create_robot(robot: RobotCreate):
-    robot_id = crud.create_robot(robot.name, robot.addressMac,robot.mission)
+    robot_id = crud.create_robot(robot.name, robot.uuid,robot.mission)
     return {"uuid": robot_id}
 
 @router.post("/delete_robot/")                              # DELETE A ROBOT BY ID
@@ -59,16 +68,16 @@ def get_all_status():
 
 @router.post("/update_status/")                              # UPDATE STATUS OF A ROBOT   
 def update_status(status: RobotStatus):
-    crud.add_status(status.robot_id, status.position, status.status)
+    crud.add_status(status.robot_id, status.instructionID, status.position, status.status)
     return {"message": "status ajouté"}
 
 @router.get("/robot/{robot_id}/status")                      # GET LAST STATUS OF A ROBOT    
 def get_status(robot_id: str):
     return crud.get_last_status(robot_id)
 
-@router.post("/robot_data_by_mac_address")                    # GET THE ROBOT DATA BY HIS MAC ADDRESS
-def get_robot_data_by_mac_address(robotMacAddress: RobotDataByMacAddress):
-    return crud.get_robot_data_by_mac_address(robotMacAddress.mac_address)
+@router.post("/robot_data_by_uuid")                    # GET THE ROBOT DATA BY HIS UUID
+def get_robot_by_uuid(robotUUID: RobotDataByUUID):
+    return crud.get_robot_by_uuid(robotUUID.uuid)
 
 @router.get('/instructions')
 def get_instructions(robot_id: str):
@@ -81,3 +90,16 @@ def create_instruction(robot_instruction: RobotInstruction):
 @router.post('/delete_instruction')
 def delete_instruction(robot_instruction: RobotInstructionForDelete):
     return crud.delete_instruction(robot_instruction.robot_id)
+
+
+# TELEMETRY ENDPOINT
+@router.post("/telemetry")
+def telemetry(telemetry_params: Telemetry_Params):
+    return crud.add_telemetry(
+        telemetry_params.robot_id,
+        telemetry_params.vitesse,
+        telemetry_params.distance_ultrasons,
+        telemetry_params.status_deplacement,
+        telemetry_params.ligne,
+        telemetry_params.status_pince
+    )
