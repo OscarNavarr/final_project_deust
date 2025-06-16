@@ -9,7 +9,7 @@ import java.io.*;
 
 
 public class RobotClient {
-    private static final String BASE_URL = "http://127.0.0.1:8000";
+    private static final String BASE_URL = "http://10.7.5.176:8000";
     private static final String MAC_ADDRESS = "12312fz-12dd-1dad-11da5";
 
 
