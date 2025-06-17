@@ -66,6 +66,10 @@ def list_robots():
 def get_all_status():
     return crud.get_status()
 
+@router.post('/all_status_by_uuid/')                         # GET ALL STATUS BY UUID
+def get_all_status_by_uuid(robotUUID: RobotDataByUUID):
+    return crud.get_all_status_by_uuid(robotUUID.uuid)
+
 @router.post("/update_status/")                              # UPDATE STATUS OF A ROBOT   
 def update_status(status: RobotStatus):
     crud.add_status(status.robot_id, status.instructionID, status.position, status.status)
@@ -90,6 +94,7 @@ def create_instruction(robot_instruction: RobotInstruction):
 @router.post('/delete_instruction')
 def delete_instruction(robot_instruction: RobotInstructionForDelete):
     return crud.delete_instruction(robot_instruction.robot_id)
+
 
 
 # TELEMETRY ENDPOINT

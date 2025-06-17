@@ -66,6 +66,33 @@ def get_status():
     conn.close()
     return result
 
+def get_all_status_by_uuid(uuid: str):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT status.timestamp, status.ligne, status.status, status.instructionId, robots.id
+        FROM status 
+        JOIN robots ON status.robot_id = robots.id
+        WHERE robots.uuid = ?
+        ORDER BY timestamp DESC
+    """, (uuid,))
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    if rows:
+        return [
+            {
+                "robot_id": row[4],
+                "timestamp": row[0],
+                "ligne": row[1],
+                "status": row[2],
+                "instructionId": row[3]
+            } for row in rows
+        ]
+    else:
+        return {"message": "Aucun état trouvé pour ce robot"}
+
 def add_status(robot_id, instructionID, position, status):
     conn = get_db()
     cursor = conn.cursor()
@@ -74,26 +101,29 @@ def add_status(robot_id, instructionID, position, status):
     conn.commit()
     conn.close()
 
-def get_last_status(robot_id: str):
+def get_last_status(uuid: str):
     conn = get_db()
     c = conn.cursor()
     
     c.execute("""
-        SELECT timestamp, ligne, status
-        FROM status
-        WHERE robot_id = ?
+        SELECT status.timestamp, status.ligne, status.status, status.instructionId, robots.id
+        FROM status 
+        JOIN robots ON status.robot_id = robots.id
+        WHERE robots.uuid = ?
         ORDER BY timestamp DESC
         LIMIT 1
-    """, (robot_id,))
+    """, (uuid,))
     
     row = c.fetchone()
     conn.close()
 
     if row:
         return {
+            "robot_id": row[4],
             "timestamp": row[0],
             "ligne": row[1],
-            "status": row[2]
+            "status": row[2],
+            "instructionId": row[3]
         }
     else:
         return {"message": "Aucun état trouvé pour ce robot"}
