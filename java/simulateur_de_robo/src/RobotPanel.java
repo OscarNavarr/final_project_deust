@@ -3,18 +3,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.Random;
 
 public class RobotPanel extends JPanel implements ActionListener, MouseListener {
     private final int WIDTH = 800, HEIGHT = 800;
     private final Color BLANC = Color.WHITE;
     private final Color NOIR = Color.BLACK;
-    private final Color[] CUBE_COULEURS = {
-            Color.RED, Color.YELLOW, Color.GREEN, new Color(255, 105, 180), new Color(128, 0, 128)
-    };
+    private Color[] cubeCouleurs;
 
     private ArrayList<Point> parcoursPoints;
-    private int[] cubeIndices = {10, 30, 60, 90, 50};
+    private int[] cubeIndices;
+    private int[] cubePositions;
     private boolean[] cubeAttrapes;
     private boolean[] cubeDeposes;
     private int selectedCubeIndex = -1;
@@ -29,15 +28,17 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
     private final int zoneStockageIndex2 = 80;
     private final int zoneTraitOffset = 15;
 
-    private String robotId ; // Valeur par défaut
+    private String robotId;
     private int instructionID;
 
-    public RobotPanel(String robotId, int instructionID) {
+    public RobotPanel(String robotId, int instructionID, int[] cubes) {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(BLANC);
         addMouseListener(this);
         this.robotId = robotId;
         this.instructionID = instructionID;
+
+        // Générer les points du parcours (forme ovale déformée)
         parcoursPoints = new ArrayList<>();
         double centerX = WIDTH / 2.0;
         double centerY = HEIGHT / 2.0;
@@ -55,8 +56,21 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
             parcoursPoints.add(new Point(x, y));
         }
 
+        // Robot au point de départ
         robot = new RobotSimule(parcoursPoints.get(0), new Color(0, 100, 255));
 
+        // Génération dynamique des indices de cubes s’ils ne sont pas déjà des positions du parcours
+        this.cubeIndices = cubes;
+        this.cubePositions = new int[cubeIndices.length];
+        for (int i = 0; i < cubeIndices.length; i++) {
+            cubePositions[i] = (i + 1) * parcoursPoints.size() / (cubeIndices.length + 1);
+        }
+
+        // Couleurs uniques pour chaque cube
+        cubeCouleurs = new Color[cubeIndices.length];
+        for (int i = 0; i < cubeIndices.length; i++) {
+            cubeCouleurs[i] = Color.getHSBColor((float) i / cubeIndices.length, 0.85f, 0.95f);
+        }
 
         cubeAttrapes = new boolean[cubeIndices.length];
         cubeDeposes = new boolean[cubeIndices.length];
@@ -64,8 +78,11 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
         Arrays.fill(cubeDeposes, false);
         boutons = new ArrayList<>();
 
+        // Lancer l’animation
         timer = new Timer(16, this);
         timer.start();
+
+        System.out.println("✅ RobotPanel initialisé avec " + cubeIndices.length + " cubes.");
     }
 
     public void setRobotId(String id) {
@@ -77,7 +94,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        // Ligne
+        // Ligne principale
         g2.setColor(NOIR);
         for (int i = 0; i < parcoursPoints.size() - 1; i++) {
             Point p1 = parcoursPoints.get(i);
@@ -85,7 +102,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
             g2.drawLine(p1.x, p1.y, p2.x, p2.y);
         }
 
-        // Zones stockage
+        // Zones de stockage
         float[] dash = {10f, 10f};
         g2.setStroke(new BasicStroke(4, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, dash, 0f));
         g2.setColor(Color.DARK_GRAY);
@@ -98,24 +115,28 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
 
         // Cubes
         for (int i = 0; i < cubeIndices.length; i++) {
+            int parcoursIndex = cubeIndices[i];
+            Point p = parcoursPoints.get(cubePositions[i]);
+
             if (!cubeAttrapes[i]) {
-                Point p = parcoursPoints.get(cubeIndices[i]);
-                g2.setColor(CUBE_COULEURS[i]);
+                g2.setColor(cubeCouleurs[i]);
                 g2.fillRect(p.x - 10, p.y - 10, 20, 20);
             } else if (cubeDeposes[i]) {
                 Point stockage = parcoursPoints.get((i % 2 == 0) ? zoneStockageIndex1 : zoneStockageIndex2);
-                g2.setColor(CUBE_COULEURS[i]);
+                g2.setColor(cubeCouleurs[i]);
                 g2.fillRect(stockage.x - 10 + i * 5, stockage.y - 10 + i * 5, 15, 15);
                 g2.setColor(Color.BLACK);
-                g2.drawString("Cube " + (i + 1) + " déposé", stockage.x + 20, stockage.y + 20 + i * 10);
+                g2.drawString("Cube " + cubeIndices[i] + " déposé", stockage.x + 20, stockage.y + 20 + i * 10);
             }
         }
 
+        // Dessiner le robot
         robot.draw(g2);
 
+        // Affichage des boutons cliquables pour déclencher le mouvement
         boutons.clear();
         for (int i = 0; i < cubeIndices.length; i++) {
-            Bouton bouton = new Bouton(20, 20 + i * 50, 100, 20, "Cube " + (i + 1), CUBE_COULEURS[i]);
+            Bouton bouton = new Bouton(20, 20 + i * 50, 100, 20, "Cube " + cubeIndices[i], cubeCouleurs[i]);
             bouton.draw(g2);
             boutons.add(bouton);
         }
@@ -131,6 +152,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
                 cubeAttrapes[selectedCubeIndex] = true;
                 aLeCube = true;
                 modeRobot = "vers_stockage";
+                System.out.println("🤖 Cube " + cubeIndices[selectedCubeIndex] + " attrapé.");
             }
         } else if ("vers_stockage".equals(modeRobot)) {
             int stockageIndex = (selectedCubeIndex % 2 == 0) ? zoneStockageIndex1 : zoneStockageIndex2;
@@ -140,12 +162,12 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
                 aLeCube = false;
                 cubeDeposes[selectedCubeIndex] = true;
                 modeRobot = "attente";
+                System.out.println("📦 Cube " + cubeIndices[selectedCubeIndex] + " déposé.");
 
-                // ENVOI API : cube déposé
                 try {
                     RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "drop_c" + selectedCubeIndex);
                 } catch (Exception ex) {
-                    System.out.println("Erreur API: " + ex.getMessage());
+                    System.out.println("❌ Erreur API : " + ex.getMessage());
                 }
 
                 selectedCubeIndex = -1;
@@ -171,12 +193,12 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
                 selectedCubeIndex = i;
                 indexPoint = findClosestPointIndex(robot.getPosition());
                 modeRobot = "vers_cube";
+                System.out.println("🖱️ Clic sur Cube " + cubeIndices[i]);
 
-                // ENVOI API : cube choisi
                 try {
                     RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "pickup_c" + selectedCubeIndex);
                 } catch (Exception ex) {
-                    System.out.println("Erreur API: " + ex.getMessage());
+                    System.out.println("❌ Erreur API : " + ex.getMessage());
                 }
                 break;
             }
@@ -196,6 +218,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
         return minIndex;
     }
 
+    // Méthodes non utilisées
     @Override public void mousePressed(MouseEvent e) {}
     @Override public void mouseReleased(MouseEvent e) {}
     @Override public void mouseEntered(MouseEvent e) {}
