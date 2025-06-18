@@ -145,7 +145,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
     @Override
     public void actionPerformed(ActionEvent e) {
         if ("vers_cube".equals(modeRobot) && selectedCubeIndex >= 0) {
-            int cibleIdx = cubeIndices[selectedCubeIndex];
+            int cibleIdx = cubePositions[selectedCubeIndex];
             if (indexPoint != cibleIdx) {
                 indexPoint = moveRobot(indexPoint, cibleIdx);
             } else {
@@ -165,7 +165,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
                 System.out.println("📦 Cube " + cubeIndices[selectedCubeIndex] + " déposé.");
 
                 try {
-                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "drop_c" + selectedCubeIndex);
+                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "drop_c" + cubeIndices[selectedCubeIndex]);
                 } catch (Exception ex) {
                     System.out.println("❌ Erreur API : " + ex.getMessage());
                 }
@@ -196,7 +196,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
                 System.out.println("🖱️ Clic sur Cube " + cubeIndices[i]);
 
                 try {
-                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "pickup_c" + selectedCubeIndex);
+                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "pickup_c" + cubeIndices[selectedCubeIndex]);
                 } catch (Exception ex) {
                     System.out.println("❌ Erreur API : " + ex.getMessage());
                 }
