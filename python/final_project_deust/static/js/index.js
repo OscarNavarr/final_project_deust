@@ -46,6 +46,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                 moduleHandleHTML.handleRobotList(uuid, robotName, robotMission);
                 // Add the new robot to the select box for instructions
                 moduleHandleHTML.handleRobotListForSelectBox(uuid, robotName);
+
+                // reset the form fields after successful creation
+                document.getElementById("robotName").value = '';
+                document.getElementById("uuid_robot").value = '';
+                document.getElementById("robotMission").value = '';
+
+
+
             } catch (error) {
                 console.error('Error creating robot:', error);
                 // Optionally, you can show an error message to the user here
@@ -78,7 +86,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const response = await moduleHandleData.createInstruction(robotId, instruction);
                 console.log('Instruction created:', response);
 
-                // Update the UI or show a success message here
+                document.getElementById("instructionType").value = ''; // Reset the instruction input field
+                
+                alert('Instruction créée avec succès !');
             } catch (error) {
                 alert('Erreur lors de la création de l\'instruction : ' + error.message);
                 console.error('Error creating instruction:', error);

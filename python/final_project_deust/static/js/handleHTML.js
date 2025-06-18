@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async() => {
                 throw new Error("Failed to delete robot");
             }
 
-            // Eliminar fila del DOM
+            // Delete row from the table
             const row = btn.closest("tr");
             if (row) row.remove();
 
