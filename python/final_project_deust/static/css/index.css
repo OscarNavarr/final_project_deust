@@ -43,5 +43,6 @@ body{
 
 #robotStatusBody{
     max-height: 12rem;
+    width: 100%;
     overflow-y: auto;
 }

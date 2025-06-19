@@ -9,29 +9,49 @@
 
     </div>
     <div class="graph-container">
-        <!--
-            ***************************************
-            *       Show robots status list       *
-            ***************************************
-        -->
-        <div style="background-color: #fff; width: 100%; margin: 2rem 0rem;border-radius: 1rem;">
-            <h2 style="line-height: 0rem; padding: 1rem 1rem;">Status robot</h2>
-            <div style="height: 17rem;overflow-y: auto;">
-                <table style="width: 100%; padding: 0.5rem;">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%;text-align: start;">Nom du robot</th>
-                            <th style="width: 25%;text-align: start;">Dérnier enregistrement</th>
-                            <th style="width: 25%;text-align: start;">Position</th>
-                            <th style="width: 25%;text-align: start;"># Cubes recuperes</th>
-                            <th style="width: 25%;text-align: start;">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="robotStatusBody">
-                        
-                        
-                    </tbody>
-                </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0rem;">
+            <div style="background-color: #fff; width: 40%; border-radius: 1rem; margin-right: 1rem;">
+                <h2 style="line-height: 0rem; padding: 1rem 1rem;">Mission des robots</h2>
+                <div style="height: 17rem; overflow-y: auto;">
+                    <table style="width: 100%; padding: 0.5rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%; text-align: start;">Nom</th>
+                                <th style="width: 25%; text-align: start;">Mission</th>
+                                <th style="width: 25%; text-align: start;">Récupérés</th>
+                                <th style="width: 25%; text-align: start;">Accomplissement(%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="robotMissionBody">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--
+                ***************************************
+                *       Show robots status list       *
+                ***************************************
+            -->
+            <div style="background-color: #fff; width: 60%; border-radius: 1rem;">
+                <h2 style="line-height: 0rem; padding: 1rem 1rem;">Status robot</h2>
+                <div style="height: 17rem;overflow-y: auto;">
+                    <table style="width: 100%; padding: 0.5rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;text-align: start;">Nom du robot</th>
+                                <th style="width: 25%;text-align: start;">Dérnier enregistrement</th>
+                                <th style="width: 25%;text-align: start;">Position</th>
+                                <th style="width: 25%;text-align: start;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="robotStatusBody">
+                            
+                            
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -113,6 +133,8 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script type="module" src="../static/js/handlecharts.js"></script>
     <script type="module" src="../static/js/handleHTML.js"></script>
     <script type="module" src="../static/js/handleData.js"></script>
     <script src="../static/js/index.js"></script>

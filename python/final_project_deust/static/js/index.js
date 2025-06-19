@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', async function () {
     try {
         const moduleHandleData = await import('./handleData.js');
@@ -7,8 +5,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
         const statusData = await moduleHandleData.getAllStatus(); // Fetch all status data
+        const allInstructions = await moduleHandleData.getAllInstructionList(); // Fetch all instructions
         const robotList = await moduleHandleData.getRobotList(); // Fetch the robot list
+        
         console.log('reponse', {statusData, robotList});
+        console.log('allInstructions', allInstructions);
 
         if(robotList && Array.isArray(robotList)) {
             for(const robot of robotList){
@@ -16,6 +17,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                 moduleHandleHTML.handleRobotList(robot[0], robot[2], robot[4]);
             }
         }
+
+        /**
+         * Show all instructions in the UI
+         */
+        for(const instruction of allInstructions){
+            moduleHandleHTML.handleInstructionList(instruction.instruction_id, instruction.robot_id, instruction.robot_name, instruction.instruction, instruction.recovered_robot); 
+        }
+
 
 
         /**
@@ -76,6 +85,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             event.preventDefault(); // Prevent the default form submission
 
             const robotId = document.getElementById("robotNameSelectBox").value;
+            const robotName = document.getElementById("robotNameSelectBox").options[document.getElementById("robotNameSelectBox").selectedIndex].text;
             const instruction = document.getElementById("instructionType").value; // return String: "1,2,4,6,..."
            
             try {
@@ -88,6 +98,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                 document.getElementById("instructionType").value = ''; // Reset the instruction input field
                 
+                // Add the new instruction to the UI  
+                moduleHandleHTML.handleInstructionList(response.instruction_id, 0, robotName, instruction, 0);
+
                 alert('Instruction créée avec succès !');
             } catch (error) {
                 alert('Erreur lors de la création de l\'instruction : ' + error.message);
@@ -99,7 +112,7 @@ document.addEventListener('DOMContentLoaded', async function () {
          * Get all status and update the UI
          */
         for(const status of statusData){
-            moduleHandleHTML.handleStatusList(status[0], status[2], status[3], 4, status[4]);
+            moduleHandleHTML.handleStatusList(status[0], status[2], status[3], status[4]);
         }
     } catch (error) {
         console.error('Error al importar el módulo:', error);

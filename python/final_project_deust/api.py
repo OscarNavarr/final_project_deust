@@ -23,6 +23,10 @@ class RobotInstruction(BaseModel):
 class RobotInstructionForDelete(BaseModel):
     robot_id: str
 
+class RobotUpdateInstruction(BaseModel):
+    instructionID: int 
+    recovered_robot: str
+
 class RobotStatus(BaseModel):
     robot_id: str
     position: str
@@ -79,17 +83,29 @@ def update_status(status: RobotStatus):
 def get_status(robot_id: str):
     return crud.get_last_status(robot_id)
 
-@router.post("/robot_data_by_uuid")                    # GET THE ROBOT DATA BY HIS UUID
+@router.post("/robot_data_by_uuid")                          # GET THE ROBOT DATA BY HIS UUID
 def get_robot_by_uuid(robotUUID: RobotDataByUUID):
     return crud.get_robot_by_uuid(robotUUID.uuid)
 
-@router.get('/instructions')
+@router.get('/instructions')                                 # GET ALL INSTRUCTIONS BY ROBOT ID  
 def get_instructions(robot_id: str):
     return crud.get_instructions(robot_id)
+
+@router.get('/all_instructions')                             # GET ALL INSTRUCTIONS
+def get_all_instructions():
+    return crud.get_all_instructions()
 
 @router.post('/create_instruction')
 def create_instruction(robot_instruction: RobotInstruction):
     return crud.create_instruction(robot_instruction.robot_id, robot_instruction.instruction) 
+
+@router.post('/update_recovered_cube_by_instruction_id')
+def update_recovered_cube_by_instruction_id(instructionUpdate: RobotUpdateInstruction):
+    print("✅ Données reçues :", instructionUpdate.dict())
+    return crud.update_recovered_cube_by_instruction_id(
+        instructionUpdate.instructionID, instructionUpdate.recovered_robot
+    )
+
 
 @router.post('/delete_instruction')
 def delete_instruction(robot_instruction: RobotInstructionForDelete):

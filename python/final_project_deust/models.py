@@ -30,6 +30,7 @@ def create_tables():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         robot_id TEXT,
         blocks TEXT,
+        recovered_robot TEXT DEFAULT NULL,
         FOREIGN KEY(robot_id) REFERENCES robots(id)
     )
     """)

@@ -24,7 +24,7 @@ public class Main {
     private static void obtenirDonneesRobot() {
         try {
             // Appel à l'API REST (POST /robot_data_by_uuid)
-            String uuid = "12312fz-12dd-1dad-11da5";
+            String uuid = "72a1834d-98ef-4b46-87f5-5e4c4e82e39a";
             String response = RobotClient.getRobotDataByUUID(uuid);
 
             System.out.println("📦 Réponse JSON brute reçue :");

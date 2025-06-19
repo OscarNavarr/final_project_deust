@@ -82,12 +82,20 @@ public class RobotClient {
         return readResponse(con);
     }
 
-    public static String sendRobotStatus(String robotId, int instructionID, String position, String status) throws IOException {
+    public static String sendRobotStatus(String robotId, int instructionID, String position, String status, String recoveredCube) throws IOException {
+        // JSON 1: para /update_status/
         String jsonInputString = String.format(
-                "{\"robot_id\":\"%s\", \"instructionID\":\"%s\", \"position\":\"%s\", \"status\":\"%s\"}",
+                "{\"robot_id\":\"%s\", \"instructionID\":%d, \"position\":\"%s\", \"status\":\"%s\"}",
                 robotId, instructionID, position, status
         );
 
+        // JSON 2: para /update_recovered_cube_by_instruction_id
+        String jsonInputStringTwo = String.format(
+                "{\"instructionID\":%d, \"recovered_robot\":\"%s\"}",
+                instructionID, recoveredCube
+        );
+
+        // 1. Primera conexión: actualizar el status
         URL url = new URL(BASE_URL + "/update_status/");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
@@ -98,11 +106,33 @@ public class RobotClient {
             byte[] input = jsonInputString.getBytes("utf-8");
             os.write(input, 0, input.length);
         }
+        if (status.contains("drop_c")) {
+            // 2. Segunda conexión: actualizar los cubes recuperados
+            URL urlTwo = new URL(BASE_URL + "/update_recovered_cube_by_instruction_id");
+            HttpURLConnection conTwo = (HttpURLConnection) urlTwo.openConnection();
+            conTwo.setRequestMethod("POST");
+            conTwo.setRequestProperty("Content-Type", "application/json");
+            conTwo.setDoOutput(true);
 
+            try (OutputStream osTwo = conTwo.getOutputStream()) {
+                byte[] input = jsonInputStringTwo.getBytes("utf-8");
+                osTwo.write(input, 0, input.length);
+            }
+
+            String responseTwo = readResponse(conTwo);
+            System.out.println("🛰️ Réponse du serveur (/update_recovered_cube...) : " + responseTwo);
+        }
+
+        // Leer ambas respuestas
         String response = readResponse(con);
-        System.out.println("Respuesta del servidor: " + response);  // 👈 Imprime aquí
+
+
+        System.out.println("🛰️ Réponse du serveur (/update_status/) : " + response);
+
+
         return response;
     }
+
 
 
     // Método reutilizable para leer la respuesta HTTP

@@ -30,6 +30,27 @@ export async function getRobotList(){
     }
 }
 
+export async function getAllInstructionList(){
+    try {
+        const response = await fetch('/all_instructions',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data; // Return the fetched instruction list for further processing
+    } catch (error) {
+        console.error("Error fetching instruction list:", error);
+        throw error; // Re-throw the error for further handling if needed
+    }
+}
+
 export async function createRobot(robotName, robotAddressMac, robotMission){
     try {
         const response = await fetch('/robot', {
@@ -92,7 +113,6 @@ export async function createInstruction(robotId, instructionValue){
         throw error; // Re-throw the error for further handling if needed
     }
 }
-
 
 export async function deleteInstruction(robotId){
     try {

@@ -165,7 +165,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
                 System.out.println("📦 Cube " + cubeIndices[selectedCubeIndex] + " déposé.");
 
                 try {
-                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "drop_c" + cubeIndices[selectedCubeIndex]);
+                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "drop_c" + cubeIndices[selectedCubeIndex],  Integer.toString(cubeIndices[selectedCubeIndex]));
                 } catch (Exception ex) {
                     System.out.println("❌ Erreur API : " + ex.getMessage());
                 }
@@ -196,7 +196,7 @@ public class RobotPanel extends JPanel implements ActionListener, MouseListener 
                 System.out.println("🖱️ Clic sur Cube " + cubeIndices[i]);
 
                 try {
-                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "pickup_c" + cubeIndices[selectedCubeIndex]);
+                    RobotClient.sendRobotStatus(robotId, instructionID, String.valueOf(indexPoint), "pickup_c" + cubeIndices[selectedCubeIndex], Integer.toString(cubeIndices[selectedCubeIndex]));
                 } catch (Exception ex) {
                     System.out.println("❌ Erreur API : " + ex.getMessage());
                 }

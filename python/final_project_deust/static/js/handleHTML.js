@@ -1,3 +1,6 @@
+// Initialize the chart for the instruction
+const moduleHandleCharts = await import('./handlecharts.js');
+
 export function handleRobotList(id, nom, mission) {
     const tableBody = document.getElementById("robotListBody");
     if (!tableBody) {
@@ -86,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async() => {
 
 
 // This function allow to show the status of each robot in the UI
-export function handleStatusList(nom, date, lignes, cubes = 3,status) {
+export function handleStatusList(nom, date, lignes, status) {
     const tableBody = document.getElementById("robotStatusBody");
     if (!tableBody) {
         console.error("Table body with id 'statusListBody' not found.");
@@ -98,10 +101,49 @@ export function handleStatusList(nom, date, lignes, cubes = 3,status) {
             <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${nom}</td>
             <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${date}</td>
             <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${lignes}</td>
-            <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${cubes}</td>
             <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${status}</td>
         </tr>
     `;
 
     tableBody.insertAdjacentHTML("beforeend", row);
+}
+
+// This function allow to show the instruction of each robot in the UI
+export function handleInstructionList(instructionId, robotId, robotName, instruction, recoveredRobot) {
+    const tableBody = document.getElementById("robotMissionBody");
+    if (!tableBody) {
+        console.error("Table body with id 'instructionListBody' not found.");
+        return;
+    }
+
+    
+
+
+   
+    const row = `
+    <tr >
+        <td style="height: 3rem; border-bottom: 1px solid #f0f0f0;">${robotName.length > 9 ? robotName.slice(0, 9) + '...' : robotName}</td>
+        <td style="height: 3rem; border-bottom: 1px solid #f0f0f0;">${instruction}</td>
+        <td style="height: 3rem; border-bottom: 1px solid #f0f0f0;">${recoveredRobot ? recoveredRobot : 0}</td>
+        <td style="height: 3rem; border-bottom: 1px solid #f0f0f0;">
+            <div id="chart_${instructionId}" style="width: 8rem;"></div>
+        </td>
+    </tr> 
+    `;
+
+    tableBody.insertAdjacentHTML("beforeend", row);
+
+    // transform string instruction to array
+    if (typeof instruction === 'string') {
+        instruction = instruction.split(',').map(Number); // Convert to array of numbers
+    }
+
+    // transform string recoveredRobot to array
+    if (typeof recoveredRobot === 'string') {
+        recoveredRobot = recoveredRobot.split(',').map(Number); // Convert to array of numbers
+    }
+
+
+    
+    moduleHandleCharts.handleChart(instructionId, instruction.length ,recoveredRobot ? recoveredRobot.length : 0);
 }

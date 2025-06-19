@@ -146,6 +146,32 @@ def get_instructions(robot_id: str):
     else:
         return {"message": "Aucun robot trouvé avec cet ID"}
     
+def get_all_instructions():
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT robots.id, instructions.id, robots.name, instructions.blocks, instructions.recovered_robot
+        FROM robots
+        JOIN instructions ON robots.id = instructions.robot_id
+    """)
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    if rows:
+        return [
+            {
+                "robot_id": row[0],
+                "instruction_id": row[1],   
+                "robot_name": row[2],
+                "instruction": row[3],
+                "recovered_robot": row[4]
+            } for row in rows
+        ]
+    else:
+        return {"message": "Aucune instruction trouvée"}
+    
 def create_instruction(robot_id: str, instruction: str):
     conn = get_db()
     cursor = conn.cursor()
@@ -158,7 +184,7 @@ def create_instruction(robot_id: str, instruction: str):
     conn.commit()
     conn.close()
     
-    return {"message": "Instruction créée avec succès"}
+    return {"message": "Instruction créée avec succès", "instruction_id": cursor.lastrowid}
 
 def delete_instruction(robot_id: str):
     conn = get_db()
@@ -173,6 +199,40 @@ def delete_instruction(robot_id: str):
     conn.close()
     
     return {"message": "Instruction supprimée avec succès"}
+
+def update_recovered_cube_by_instruction_id(instruction_id: int, recovered_robot: str):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # 1. Obtener el valor actual
+    cursor.execute("""
+        SELECT recovered_robot FROM instructions WHERE id = ?
+    """, (instruction_id,))
+    row = cursor.fetchone()
+
+    if not row:
+        conn.close()
+        return {"error": "Instruction ID non trouvé."}
+
+    current_value = row[0] or ""  # en caso de None
+    new_value = current_value + ("," if current_value else "") + recovered_robot
+
+    # 2. Actualizar con la nueva cadena concatenada
+    cursor.execute("""
+        UPDATE instructions
+        SET recovered_robot = ?
+        WHERE id = ?
+    """, (new_value, instruction_id))
+
+    conn.commit()
+    conn.close()
+
+    return {
+        "message": "Cube ajouté à recovered_robot",
+        "instruction_id": instruction_id,
+        "recovered_robot": new_value
+    }
+
 
 def add_telemetry(robot_id: str, vitesse: float, distance_ultrasons: float, status_deplacement: str, ligne: str, status_pince: str):
     conn = get_db()
