@@ -100,7 +100,7 @@ export function handleStatusList(nom, date, lignes, status) {
         <tr>
             <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${nom}</td>
             <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${date}</td>
-            <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${lignes}</td>
+            <td style="width: 25%;text-align: center;height:3rem;border-bottom: 1px solid #f0f0f0;";">${lignes}</td>
             <td style="width: 25%;text-align: start;height:3rem;border-bottom: 1px solid #f0f0f0;";">${status}</td>
         </tr>
     `;

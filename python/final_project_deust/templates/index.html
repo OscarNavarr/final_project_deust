@@ -10,6 +10,11 @@
     </div>
     <div class="graph-container">
 
+        <div id="barChartResult" style="width: 97.5%; border-radius: 1rem; background-color: #fff; padding: 1rem; margin-bottom: 2rem; min-height: 17rem;">
+            
+
+        </div>
+
         <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0rem;">
             <div style="background-color: #fff; width: 40%; border-radius: 1rem; margin-right: 1rem;">
                 <h2 style="line-height: 0rem; padding: 1rem 1rem;">Mission des robots</h2>
@@ -42,7 +47,7 @@
                             <tr>
                                 <th style="width: 25%;text-align: start;">Nom du robot</th>
                                 <th style="width: 25%;text-align: start;">Dérnier enregistrement</th>
-                                <th style="width: 25%;text-align: start;">Position</th>
+                                <th style="width: 25%;text-align: center;">Position</th>
                                 <th style="width: 25%;text-align: start;">Status</th>
                             </tr>
                         </thead>
@@ -86,10 +91,10 @@
             * Show robots list and add robot form *
             ***************************************
         -->
-        <div id="container-for-robotList-and-addRobot" style="display: flex; justify-content: space-between;">
+        <div id="container-for-robotList-and-addRobot" style="display: flex; justify-content: space-between; margin-bottom: 2rem;">
             <div id="robotList">
                 <h2 style="line-height: 0rem; margin-left: 1rem; margin-bottom: 3rem;">Liste des Robots</h2>
-                <div style="max-height: 15rem !important; overflow-y: auto;">
+                <div style="max-height: 22rem !important; overflow-y: auto;">
                     <table id="robotListTable">
                         <thead>
                             <tr>

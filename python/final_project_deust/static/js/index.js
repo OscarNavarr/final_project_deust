@@ -2,12 +2,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     try {
         const moduleHandleData = await import('./handleData.js');
         const moduleHandleHTML = await import('./handleHTML.js');
-
+        const moduleHandleCharts = await import('./handlecharts.js');
 
         const statusData = await moduleHandleData.getAllStatus(); // Fetch all status data
         const allInstructions = await moduleHandleData.getAllInstructionList(); // Fetch all instructions
         const robotList = await moduleHandleData.getRobotList(); // Fetch the robot list
-        
+
+
         console.log('reponse', {statusData, robotList});
         console.log('allInstructions', allInstructions);
 
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             moduleHandleHTML.handleInstructionList(instruction.instruction_id, instruction.robot_id, instruction.robot_name, instruction.instruction, instruction.recovered_robot); 
         }
 
+        moduleHandleCharts.handleBarChart(allInstructions); // Call the function to handle the bar chart
 
 
         /**
@@ -59,7 +61,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                 // reset the form fields after successful creation
                 document.getElementById("robotName").value = '';
                 document.getElementById("uuid_robot").value = '';
-                document.getElementById("robotMission").value = '';
 
 
 
