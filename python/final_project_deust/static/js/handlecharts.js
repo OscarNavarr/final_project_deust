@@ -42,6 +42,12 @@ export function handleBarChart(data){
     for (const instruction of data) {
         const recovered_robot = instruction.recovered_robot || "0";
 
+        if( recovered_robot === "0" || recovered_robot === null || recovered_robot === 0) {
+
+            totalResult.push(0);
+            continue;
+        }
+
 
         // trnasform the recovered_robot to array of numbers
         const recoveredRobotArray = recovered_robot.split(',').map(Number);
